@@ -7,6 +7,44 @@ let ch = window.innerHeight - 100;
 canvas.width = cw;
 canvas.height = ch;
 
+let colors = [
+  "rgb(255, 0, 0, 0.35)",
+  "rgba(128, 0, 128, 0.35)",
+  "rgba(255, 255, 0, 0.35)",
+  "rgba(0, 0, 255, 0.35)",
+  "rgba(255, 165, 0, 0.35)",
+  "rgba(255, 99, 71, 0.35)",
+  "rgba(0, 255, 255, 0.35)",
+  "rgba(255, 0, 255, 0.35)",
+  "rgba(0, 255, 0, 0.35)",
+  "rgba(0, 0, 128, 0.35)",
+  "rgba(0, 128, 128, 0.35)",
+  "rgba(240, 255, 255, 0.35)",
+  "rgba(255, 228, 196, 0.35)",
+  "rgba(0, 0, 0, 0.35)",
+  "rgba(138, 43, 226, 0.35)",
+  "rgba(165, 42, 42, 0.35)",
+  "rgba(127, 255, 0, 0.35)",
+  "rgba(220, 20, 60, 0.35)",
+  "rgba(255, 215, 0, 0.35)",
+  "rgba(240, 230, 140, 0.35)",
+  "rgba(205, 92, 92, 0.35)",
+  "rgba(255, 105, 180, 0.35)",
+  "rgba(144, 238, 144, 0.35)",
+  "rgba(250, 250, 210, 0.35)",
+  "rgba(255, 160, 122, 0.35)",
+  "rgba(135, 206, 250, 0.35)",
+  "rgba(32, 178, 170, 0.35)",
+  "rgba(72, 209, 204, 0.35)",
+  "rgba(255, 69, 0, 0.35)",
+  "rgba(221, 160, 221, 0.35)",
+  "rgba(106, 90, 205, 0.35)",
+  "rgba(0, 255, 127, 0.35)",
+  "rgba(245, 245, 245, 0.35)",
+  "rgba(154, 205, 50, 0.35)",
+  "rgba(64, 224, 208, 0.35)",
+];
+
 // ***********************************
 // first baby steps of learning canvas
 // in this section we created multiple lines
@@ -55,7 +93,6 @@ canvas.height = ch;
 //   "yellowgreen",
 //   "turquoise",
 // ];
-
 // for (let i = 0; i < count; i++) {
 //   ctx.beginPath();
 //   ctx.moveTo(
@@ -87,15 +124,16 @@ canvas.height = ch;
 // ctx.strokeStyle = "blueviolet";
 // ctx.stroke();
 
-function Circle(x, y, dx, dy, radius) {
+function Circle(x, y, dx, dy, radius, colorFillStyle) {
   this.x = x;
   this.y = y;
   this.dx = dx;
   this.dy = dy;
   this.radius = radius;
+  this.colorFillStyle = colorFillStyle;
 
   this.draw = function () {
-    ctx.fillStyle = "rgba(255,0,0,0.35)";
+    ctx.fillStyle = colorFillStyle;
     ctx.strokeStyle = "blueviolet";
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
@@ -128,10 +166,11 @@ for (let i = 0; i < 100; i++) {
   let y = Math.random() * (ch - radius * 2) + radius;
   let dx = (Math.random() - 0.5) * 5;
   let dy = (Math.random() - 0.5) * 5;
+  let colorFillStyle = colors[Math.floor(Math.random() * colors.length)];
 
-  circleArray.push(new Circle(x, y, dx, dy, radius));
+  circleArray.push(new Circle(x, y, dx, dy, radius, colorFillStyle));
 }
-
+console.log(Math.random() * colors.length);
 function animate() {
   requestAnimationFrame(animate);
   ctx.clearRect(0, 0, innerWidth, innerHeight);
