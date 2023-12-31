@@ -1,12 +1,6 @@
 let canvas = document.querySelector("canvas");
 let ctx = canvas.getContext("2d");
 
-let cw = window.innerWidth - 100;
-let ch = window.innerHeight - 100;
-
-canvas.width = cw;
-canvas.height = ch;
-
 let colors = [
   "rgb(255, 0, 0, 0.35)",
   "rgba(128, 0, 128, 0.35)",
@@ -46,8 +40,8 @@ let colors = [
 ];
 
 // ***********************************
-// first baby steps of learning canvas
-// in this section we created multiple lines
+// - first baby steps of learning canvas
+// - in this section we created multiple lines
 // drawn from random positions based on window width and height.
 // ***********************************
 
@@ -108,10 +102,12 @@ let colors = [
 // }
 
 // ***********************************
-// next we start animating
-// created an object instance,
-// and by using loops
+// - next we start animating
+// - created an object instance,
+// and by using loops,
 // drew multiple dynamic sircles with random stats
+// - added interactivity and dynamic generation of circles
+// on resizing the window.
 // ***********************************
 
 // let x = Math.random() * cw;
@@ -124,12 +120,36 @@ let colors = [
 // ctx.strokeStyle = "blueviolet";
 // ctx.stroke();
 
-function Circle(x, y, dx, dy, radius, colorFillStyle) {
+let mouse = {
+  x: undefined,
+  y: undefined,
+};
+
+let maxRadius = 40;
+let minRadius = 5;
+
+window.addEventListener("mousemove", function (event) {
+  mouse.x = event.x;
+  mouse.y = event.y;
+});
+
+canvas.width = window.innerWidth - 100;
+canvas.height = window.innerHeight - 100;
+
+window.addEventListener("resize", function () {
+  canvas.width = window.innerWidth - 100;
+  canvas.height = window.innerHeight - 100;
+
+  init();
+});
+
+function Circle(x, y, dx, dy, radius, colorFillStyle, minRadius) {
   this.x = x;
   this.y = y;
   this.dx = dx;
   this.dy = dy;
   this.radius = radius;
+  this.minRadius = radius;
   this.colorFillStyle = colorFillStyle;
 
   this.draw = function () {
@@ -148,29 +168,53 @@ function Circle(x, y, dx, dy, radius, colorFillStyle) {
     this.y += this.dy;
 
     // bounce off edges
-    if (this.x + this.radius > cw || this.x + this.radius <= 50) {
+    if (
+      this.x + this.radius > window.innerWidth - 100 ||
+      this.x + this.radius <= 50
+    ) {
       this.dx = -this.dx;
     }
-    if (this.y + this.radius > ch || this.y + this.radius <= 50) {
+    if (
+      this.y + this.radius > window.innerHeight - 100 ||
+      this.y + this.radius <= 50
+    ) {
       this.dy = -this.dy;
     }
+
+    // interactivity
+    if (
+      mouse.x - this.x < 50 &&
+      mouse.x - this.x > -50 &&
+      mouse.y - this.y < 50 &&
+      mouse.y - this.y > -50
+    ) {
+      if (this.radius < maxRadius) {
+        this.radius += 1;
+      }
+    } else if (this.radius > this.minRadius) {
+      this.radius -= 1;
+    }
+
     this.draw();
   };
 }
 
 let circleArray = [];
 
-for (let i = 0; i < 100; i++) {
-  let radius = 30;
-  let x = Math.random() * (cw - radius * 2) + radius;
-  let y = Math.random() * (ch - radius * 2) + radius;
-  let dx = (Math.random() - 0.5) * 5;
-  let dy = (Math.random() - 0.5) * 5;
-  let colorFillStyle = colors[Math.floor(Math.random() * colors.length)];
+function init() {
+  circleArray = [];
+  for (let i = 0; i < 1000; i++) {
+    let radius = Math.random() * 10 + 1;
+    let x = Math.random() * (window.innerWidth - 100 - radius * 2) + radius;
+    let y = Math.random() * (window.innerHeight - 100 - radius * 2) + radius;
+    let dx = (Math.random() - 0.5) * 1;
+    let dy = (Math.random() - 0.5) * 1;
+    let colorFillStyle = colors[Math.floor(Math.random() * colors.length)];
 
-  circleArray.push(new Circle(x, y, dx, dy, radius, colorFillStyle));
+    circleArray.push(new Circle(x, y, dx, dy, radius, colorFillStyle));
+  }
 }
-console.log(Math.random() * colors.length);
+
 function animate() {
   requestAnimationFrame(animate);
   ctx.clearRect(0, 0, innerWidth, innerHeight);
@@ -180,4 +224,5 @@ function animate() {
   }
 }
 
+init();
 animate();
